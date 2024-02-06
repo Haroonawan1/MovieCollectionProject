@@ -2,6 +2,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Scanner;
 
 public class MovieCollection
@@ -19,6 +20,7 @@ public class MovieCollection
         for (Movie movie : movies) {
             String[] movieCastList = movie.getCast().split("\\|");
             for (String castMember : movieCastList) {
+                castMember = castMember.toLowerCase();
                 if (!castList.contains(castMember)) {
                     castList.add(castMember);
                 }
@@ -34,7 +36,6 @@ public class MovieCollection
     public void menu()
     {
         String menuOption = "";
-
         System.out.println("Welcome to the movie collection!");
         System.out.println("Total: " + movies.size() + " movies");
 
@@ -48,7 +49,6 @@ public class MovieCollection
             System.out.println("- list top 50 (r)ated movies");
             System.out.println("- list top 50 (h)igest revenue movies");
             System.out.println("- (q)uit");
-            System.out.println(castList);
             System.out.print("Enter choice: ");
             menuOption = scanner.nextLine();
 
@@ -61,33 +61,14 @@ public class MovieCollection
 
     private void processOption(String option)
     {
-        if (option.equals("t"))
-        {
-            searchTitles();
-        }
-        else if (option.equals("c"))
-        {
-            searchCast();
-        }
-        else if (option.equals("k"))
-        {
-            searchKeywords();
-        }
-        else if (option.equals("g"))
-        {
-            listGenres();
-        }
-        else if (option.equals("r"))
-        {
-            listHighestRated();
-        }
-        else if (option.equals("h"))
-        {
-            listHighestRevenue();
-        }
-        else
-        {
-            System.out.println("Invalid choice!");
+        switch (option) {
+            case "t" -> searchTitles();
+            case "c" -> searchCast();
+            case "k" -> searchKeywords();
+            case "g" -> listGenres();
+            case "r" -> listHighestRated();
+            case "h" -> listHighestRevenue();
+            default -> System.out.println("Invalid choice!");
         }
     }
 
@@ -103,15 +84,13 @@ public class MovieCollection
         ArrayList<Movie> results = new ArrayList<Movie>();
 
         // search through ALL movies in collection
-        for (int i = 0; i < movies.size(); i++)
-        {
-            String movieTitle = movies.get(i).getTitle();
+        for (Movie movie : movies) {
+            String movieTitle = movie.getTitle();
             movieTitle = movieTitle.toLowerCase();
 
-            if (movieTitle.indexOf(searchTerm) != -1)
-            {
+            if (movieTitle.contains(searchTerm)) {
                 //add the Movie objest to the results list
-                results.add(movies.get(i));
+                results.add(movie);
             }
         }
 
@@ -126,7 +105,7 @@ public class MovieCollection
             // this will print index 0 as choice 1 in the results list; better for user!
             int choiceNum = i + 1;
 
-            System.out.println("" + choiceNum + ". " + title);
+            System.out.println(choiceNum + ". " + title);
         }
 
         System.out.println("Which movie would you like to learn more about?");
@@ -177,40 +156,59 @@ public class MovieCollection
     private void searchCast()
     {
         System.out.print("Enter a cast member search term: ");
-        String castMemberSearchTerm = scanner.nextLine();
-
-        // prevent case sensitivity
-        castMemberSearchTerm = castMemberSearchTerm.toLowerCase();
-
-        // arraylist to hold search results
+        String castMemberSearchTerm = scanner.nextLine().toLowerCase();
         ArrayList<String> results = new ArrayList<String>();
 
-        // search through ALL movies in collection
-        for (int i = 0; i < castList.size(); i++)
-        {
-            if (castList.get(i).contains(castMemberSearchTerm))
-            {
-                //add the Movie objest to the results list
-                results.add(castList.get(i));
+        for (String castMember : castList) {
+            if (castMember.contains(castMemberSearchTerm)) {
+                results.add(castMember);
             }
         }
 
-        // now, display them all to the user
-        for (int i = 0; i < results.size(); i++)
-        {
-            String title = results.get(i);
-
-            // this will print index 0 as choice 1 in the results list; better for user!
-            int choiceNum = i + 1;
-
-            System.out.println("" + choiceNum + ". " + title);
+        for(int i = 0; i < results.size(); i++) {
+            for (int j = i + 1; j < results.size(); j++) {
+                if(results.get(i).compareTo(results.get(j))>0) {
+                    String temp = results.get(i);
+                    results.set(i, results.get(j));
+                    results.set(j, temp);
+                }
+            }
         }
 
-        System.out.println("Which movie would you like to learn more about?");
+        for (int i = 0; i < results.size(); i++) {
+            String castMember = results.get(i);
+            int choiceNum = i + 1;
+            System.out.println(choiceNum + ". " + castMember);
+        }
+
+        System.out.println("Which cast member would you like to learn more about?");
         System.out.print("Enter number: ");
 
         int choice = scanner.nextInt();
         scanner.nextLine();
+
+        ArrayList<Movie> moviesWithCast = new ArrayList<>();
+        for (Movie movie : movies) {
+            String[] castArray = movie.getCast().split("\\|");
+            for (String castMember : castArray){
+                if (castMember.toLowerCase().equals(results.get(choice))) {
+                    moviesWithCast.add(movie);
+                }
+            }
+        }
+
+        System.out.println();
+        sortResults(moviesWithCast);
+        for (int i = 0; i < moviesWithCast.size(); i++) {
+            String title = moviesWithCast.get(i).getTitle();
+            int choiceNum = i + 1;
+            System.out.println(choiceNum + ". " + title);
+        }
+
+        System.out.print("\nEnter the number of the movie you want to learn more about: ");
+        int choice2 = scanner.nextInt() - 1;
+        scanner.nextLine();
+        displayMovieInfo(moviesWithCast.get(choice2));
 
         System.out.println("\n ** Press Enter to Return to Main Menu **");
         scanner.nextLine();

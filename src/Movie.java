@@ -1,6 +1,3 @@
-/**
- * Class that represents a single Movie object
- */
 public class Movie
 {
     private String title;
