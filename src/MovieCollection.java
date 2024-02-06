@@ -218,38 +218,24 @@ public class MovieCollection
     {
         System.out.print("Enter a keyword search term: ");
         String keywordTerm = scanner.nextLine();
-
-        // prevent case sensitivity
         keywordTerm = keywordTerm.toLowerCase();
-
-        // arraylist to hold search results
         ArrayList<Movie> results = new ArrayList<Movie>();
 
-        // search through ALL movies in collection
-        for (int i = 0; i < movies.size(); i++)
-        {
-            String keywords = movies.get(i).getKeywords();
+        for (Movie movie : movies) {
+            String keywords = movie.getKeywords();
             keywords = keywords.toLowerCase();
 
-            if (keywords.indexOf(keywordTerm) != -1)
-            {
-                //add the Movie objest to the results list
-                results.add(movies.get(i));
+            if (keywords.contains(keywordTerm)) {
+                results.add(movie);
             }
         }
 
-        // sort the results by title
         sortResults(results);
 
-        // now, display them all to the user
-        for (int i = 0; i < results.size(); i++)
-        {
+        for (int i = 0; i < results.size(); i++) {
             String title = results.get(i).getTitle();
-
-            // this will print index 0 as choice 1 in the results list; better for user!
             int choiceNum = i + 1;
-
-            System.out.println("" + choiceNum + ". " + title);
+            System.out.println(choiceNum + ". " + title);
         }
 
         System.out.println("Which movie would you like to learn more about?");
@@ -257,9 +243,7 @@ public class MovieCollection
 
         int choice = scanner.nextInt();
         scanner.nextLine();
-
         Movie selectedMovie = results.get(choice - 1);
-
         displayMovieInfo(selectedMovie);
 
         System.out.println("\n ** Press Enter to Return to Main Menu **");
@@ -268,7 +252,44 @@ public class MovieCollection
 
     private void listGenres()
     {
+        String[] genres = new String[]{"Action", "Adventure", "Animation", "Comedy", "Crime", "Documentary", "Drama", "Family", "Fantasy", "Foreign", "History", "Horror", "Music", "Mystery", "Romance", "Science Fiction", "TV Movie", "Thriller", "War", "Western"};
+        for (int i = 0; i < genres.length; i++) {
+            String title = genres[i];
+            int choiceNum = i + 1;
+            System.out.println(choiceNum + ". " + title);
+        }
 
+        ArrayList<Movie> results = new ArrayList<>();
+        System.out.print("Pick a genre number: ");
+        String genreSearchTerm = genres[Integer.parseInt(scanner.nextLine()) - 1].toLowerCase();
+
+        for (Movie movie : movies){
+            String[] movieGenres = movie.getGenres().split("\\|");
+            for (String genre : movieGenres) {
+                if (genre.toLowerCase().equals(genreSearchTerm)){
+                    results.add(movie);
+                }
+            }
+        }
+
+        sortResults(results);
+
+        for (int i = 0; i < results.size(); i++) {
+            String title = results.get(i).getTitle();
+            int choiceNum = i + 1;
+            System.out.println(choiceNum + ". " + title);
+        }
+
+        System.out.println("Which movie would you like to learn more about?");
+        System.out.print("Enter number: ");
+
+        int choice = scanner.nextInt();
+        scanner.nextLine();
+        Movie selectedMovie = results.get(choice - 1);
+        displayMovieInfo(selectedMovie);
+
+        System.out.println("\n ** Press Enter to Return to Main Menu **");
+        scanner.nextLine();
     }
 
     private void listHighestRated()
