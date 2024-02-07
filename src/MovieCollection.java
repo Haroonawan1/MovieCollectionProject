@@ -75,34 +75,22 @@ public class MovieCollection
     private void searchTitles()
     {
         System.out.print("Enter a title search term: ");
-        String searchTerm = scanner.nextLine();
-
-        // prevent case sensitivity
-        searchTerm = searchTerm.toLowerCase();
-
-        // arraylist to hold search results
+        String searchTerm = scanner.nextLine().toLowerCase();
         ArrayList<Movie> results = new ArrayList<Movie>();
 
-        // search through ALL movies in collection
         for (Movie movie : movies) {
             String movieTitle = movie.getTitle();
             movieTitle = movieTitle.toLowerCase();
 
             if (movieTitle.contains(searchTerm)) {
-                //add the Movie objest to the results list
                 results.add(movie);
             }
         }
 
-        // sort the results by title
         sortResults(results);
 
-        // now, display them all to the user
-        for (int i = 0; i < results.size(); i++)
-        {
+        for (int i = 0; i < results.size(); i++) {
             String title = results.get(i).getTitle();
-
-            // this will print index 0 as choice 1 in the results list; better for user!
             int choiceNum = i + 1;
 
             System.out.println(choiceNum + ". " + title);
@@ -113,9 +101,7 @@ public class MovieCollection
 
         int choice = scanner.nextInt();
         scanner.nextLine();
-
         Movie selectedMovie = results.get(choice - 1);
-
         displayMovieInfo(selectedMovie);
 
         System.out.println("\n ** Press Enter to Return to Main Menu **");
@@ -157,7 +143,7 @@ public class MovieCollection
     {
         System.out.print("Enter a cast member search term: ");
         String castMemberSearchTerm = scanner.nextLine().toLowerCase();
-        ArrayList<String> results = new ArrayList<String>();
+        ArrayList<String> results = new ArrayList<>();
 
         for (String castMember : castList) {
             if (castMember.contains(castMemberSearchTerm)) {
@@ -294,7 +280,32 @@ public class MovieCollection
 
     private void listHighestRated()
     {
+        ArrayList<Movie> top50Rated = new ArrayList<>();
+        top50Rated.add(movies.get(0));
+        int index = 0;
+        for (int i = 1; i < movies.size(); i++) {
+            for (int j = 1; j < top50Rated.size() - 1; j++) {
+                if (movies.get(i).getUserRating() > top50Rated.get(0).getUserRating()){
+                    index = 0;
+                }
+                else if (movies.get(i).getUserRating() >= top50Rated.get(j).getUserRating() && movies.get(i).getUserRating() <= top50Rated.get(j - 1).getUserRating()) {
+                    index = j;
+                }
+                else if (movies.get(i).getUserRating() < top50Rated.get(top50Rated.size() - 1).getUserRating()){
+                    index = top50Rated.size() - 1;
+                }
+            }
+            top50Rated.add(index, movies.get(i));
+            if (top50Rated.size() > 50){
+                top50Rated.remove(50);
+            }
+        }
 
+        for (int i = 0; i < top50Rated.size(); i++) {
+            String movie = top50Rated.get(i).getTitle();
+            int choiceNum = i + 1;
+            System.out.println(choiceNum + ". " + movie + " : " + top50Rated.get(i).getUserRating());
+        }
     }
 
     private void listHighestRevenue()
