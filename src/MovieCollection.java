@@ -284,7 +284,7 @@ public class MovieCollection
         top50Rated.add(movies.get(0));
         int index = 0;
         for (int i = 1; i < movies.size(); i++) {
-            for (int j = 1; j < top50Rated.size() - 1; j++) {
+            for (int j = 1; j < top50Rated.size(); j++) {
                 if (movies.get(i).getUserRating() > top50Rated.get(0).getUserRating()){
                     index = 0;
                 }
@@ -310,7 +310,32 @@ public class MovieCollection
 
     private void listHighestRevenue()
     {
+        ArrayList<Movie> top50Rated = new ArrayList<>();
+        top50Rated.add(movies.get(0));
+        int index = 0;
+        for (int i = 1; i < movies.size(); i++) {
+            for (int j = 1; j < top50Rated.size(); j++) {
+                if (movies.get(i).getRevenue() > top50Rated.get(0).getRevenue()){
+                    index = 0;
+                }
+                else if (movies.get(i).getRevenue() >= top50Rated.get(j).getRevenue() && movies.get(i).getRevenue() <= top50Rated.get(j - 1).getRevenue()) {
+                    index = j;
+                }
+                else if (movies.get(i).getRevenue() < top50Rated.get(top50Rated.size() - 1).getRevenue()){
+                    index = top50Rated.size() - 1;
+                }
+            }
+            top50Rated.add(index, movies.get(i));
+            if (top50Rated.size() > 50){
+                top50Rated.remove(50);
+            }
+        }
 
+        for (int i = 0; i < top50Rated.size(); i++) {
+            String movie = top50Rated.get(i).getTitle();
+            int choiceNum = i + 1;
+            System.out.println(choiceNum + ". " + movie + " : " + top50Rated.get(i).getRevenue());
+        }
     }
 
     private void importMovieList(String fileName)
