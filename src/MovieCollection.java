@@ -292,7 +292,7 @@ public class MovieCollection
                     index = j;
                 }
                 else if (movies.get(i).getUserRating() < top50Rated.get(top50Rated.size() - 1).getUserRating()){
-                    index = top50Rated.size() - 1;
+                    index = top50Rated.size();
                 }
             }
             top50Rated.add(index, movies.get(i));
@@ -306,27 +306,35 @@ public class MovieCollection
             int choiceNum = i + 1;
             System.out.println(choiceNum + ". " + movie + " : " + top50Rated.get(i).getUserRating());
         }
+
+        System.out.println("Which movie would you like to learn more about?");
+        System.out.print("Enter number: ");
+
+        int choice = scanner.nextInt();
+        scanner.nextLine();
+        Movie selectedMovie = top50Rated.get(choice - 1);
+        displayMovieInfo(selectedMovie);
+
+        System.out.println("\n ** Press Enter to Return to Main Menu **");
+        scanner.nextLine();
     }
 
     private void listHighestRevenue()
     {
         ArrayList<Movie> top50Rated = new ArrayList<>();
-        top50Rated.add(movies.get(0));
         int index = 0;
-        for (int i = 1; i < movies.size(); i++) {
+        for (Movie movie : movies) {
             for (int j = 1; j < top50Rated.size(); j++) {
-                if (movies.get(i).getRevenue() > top50Rated.get(0).getRevenue()){
+                if (movie.getRevenue() > top50Rated.get(0).getRevenue()) {
                     index = 0;
-                }
-                else if (movies.get(i).getRevenue() >= top50Rated.get(j).getRevenue() && movies.get(i).getRevenue() <= top50Rated.get(j - 1).getRevenue()) {
+                } else if (movie.getRevenue() > top50Rated.get(j).getRevenue() && movie.getRevenue() < top50Rated.get(j - 1).getRevenue()) {
                     index = j;
-                }
-                else if (movies.get(i).getRevenue() < top50Rated.get(top50Rated.size() - 1).getRevenue()){
-                    index = top50Rated.size() - 1;
+                } else if (movie.getRevenue() < top50Rated.get(top50Rated.size() - 1).getRevenue()) {
+                    index = top50Rated.size();
                 }
             }
-            top50Rated.add(index, movies.get(i));
-            if (top50Rated.size() > 50){
+            top50Rated.add(index, movie);
+            if (top50Rated.size() > 50) {
                 top50Rated.remove(50);
             }
         }
@@ -336,6 +344,17 @@ public class MovieCollection
             int choiceNum = i + 1;
             System.out.println(choiceNum + ". " + movie + " : " + top50Rated.get(i).getRevenue());
         }
+
+        System.out.println("Which movie would you like to learn more about?");
+        System.out.print("Enter number: ");
+
+        int choice = scanner.nextInt();
+        scanner.nextLine();
+        Movie selectedMovie = top50Rated.get(choice - 1);
+        displayMovieInfo(selectedMovie);
+
+        System.out.println("\n ** Press Enter to Return to Main Menu **");
+        scanner.nextLine();
     }
 
     private void importMovieList(String fileName)
