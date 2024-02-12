@@ -20,7 +20,6 @@ public class MovieCollection
         for (Movie movie : movies) {
             String[] movieCastList = movie.getCast().split("\\|");
             for (String castMember : movieCastList) {
-                castMember = castMember.toLowerCase();
                 if (!castList.contains(castMember)) {
                     castList.add(castMember);
                 }
@@ -146,7 +145,7 @@ public class MovieCollection
         ArrayList<String> results = new ArrayList<>();
 
         for (String castMember : castList) {
-            if (castMember.contains(castMemberSearchTerm)) {
+            if (castMember.toLowerCase().contains(castMemberSearchTerm)) {
                 results.add(castMember);
             }
         }
@@ -177,7 +176,7 @@ public class MovieCollection
         for (Movie movie : movies) {
             String[] castArray = movie.getCast().split("\\|");
             for (String castMember : castArray){
-                if (castMember.toLowerCase().equals(results.get(choice))) {
+                if (castMember.toLowerCase().equals(results.get(choice - 1).toLowerCase())) {
                     moviesWithCast.add(movie);
                 }
             }
@@ -281,9 +280,10 @@ public class MovieCollection
     private void listHighestRated()
     {
         ArrayList<Movie> top50Rated = new ArrayList<>();
-        top50Rated.add(movies.get(0));
         int index = 0;
-        for (int i = 1; i < movies.size(); i++) {
+        top50Rated.add(movies.get(0));
+        top50Rated.add(movies.get(1));
+        for (int i = 2; i < movies.size(); i++) {
             for (int j = 1; j < top50Rated.size(); j++) {
                 if (movies.get(i).getUserRating() > top50Rated.get(0).getUserRating()){
                     index = 0;
@@ -304,7 +304,7 @@ public class MovieCollection
         for (int i = 0; i < top50Rated.size(); i++) {
             String movie = top50Rated.get(i).getTitle();
             int choiceNum = i + 1;
-            System.out.println(choiceNum + ". " + movie + " : " + top50Rated.get(i).getUserRating());
+            System.out.println(choiceNum + ". " + movie + ": " + top50Rated.get(i).getUserRating());
         }
 
         System.out.println("Which movie would you like to learn more about?");
@@ -323,17 +323,19 @@ public class MovieCollection
     {
         ArrayList<Movie> top50Rated = new ArrayList<>();
         int index = 0;
-        for (Movie movie : movies) {
+        top50Rated.add(movies.get(0));
+        top50Rated.add(movies.get(1));
+        for (int i = 2; i < movies.size(); i++) {
             for (int j = 1; j < top50Rated.size(); j++) {
-                if (movie.getRevenue() > top50Rated.get(0).getRevenue()) {
+                if (movies.get(i).getRevenue() > top50Rated.get(0).getRevenue()) {
                     index = 0;
-                } else if (movie.getRevenue() > top50Rated.get(j).getRevenue() && movie.getRevenue() < top50Rated.get(j - 1).getRevenue()) {
+                } else if (movies.get(i).getRevenue() > top50Rated.get(j).getRevenue() && movies.get(i).getRevenue() < top50Rated.get(j - 1).getRevenue()) {
                     index = j;
-                } else if (movie.getRevenue() < top50Rated.get(top50Rated.size() - 1).getRevenue()) {
+                } else if (movies.get(i).getRevenue() < top50Rated.get(top50Rated.size() - 1).getRevenue()) {
                     index = top50Rated.size();
                 }
             }
-            top50Rated.add(index, movie);
+            top50Rated.add(index, movies.get(i));
             if (top50Rated.size() > 50) {
                 top50Rated.remove(50);
             }
